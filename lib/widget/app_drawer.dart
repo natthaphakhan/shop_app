@@ -9,7 +9,7 @@ class AppDrawer extends StatelessWidget {
       child: Column(
         children: [
           AppBar(
-            title: const Text('hello world'),
+            title: const Text('MENU'),
             automaticallyImplyLeading: false,
           ),
           const Divider(),
