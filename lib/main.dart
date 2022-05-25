@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/provider/order_provider.dart';
-import 'package:shop_app/screen/edite_product.dart';
+import 'package:shop_app/screen/edit_product.dart';
 import 'package:shop_app/screen/order_screen.dart';
 import 'package:shop_app/screen/product_screen.dart';
 import 'package:shop_app/provider/cart_provider.dart';
@@ -30,18 +29,14 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          textTheme:
-              GoogleFonts.kanitTextTheme(Theme.of(context).textTheme),
-          primarySwatch: Colors.blue,
-        ),
+       
         title: 'SHOP APP',
         initialRoute: '/',
         routes: {
           '/': (context) => const ProductsPage(),
           '/orders': (context) => const OrderScreen(),
-          '/user-product': (context) => const UserProductScreen(),
           '/edit-product': (context) => const EditProduct(),
+          '/user-product': (context) => const UserProductScreen(),
         },
       ),
     );
