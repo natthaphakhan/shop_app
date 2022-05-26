@@ -29,7 +29,7 @@ class _EditProductState extends State<EditProduct> {
     'imageUrl': '',
   };
   bool _isInit = true;
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -75,6 +75,7 @@ class _EditProductState extends State<EditProduct> {
 
   Future<void> _saveForm() async {
     final isValid = _form.currentState!.validate();
+
     if (!isValid) {
       return;
     }
@@ -85,18 +86,26 @@ class _EditProductState extends State<EditProduct> {
     });
 
     if (_editProduct.id != '') {
-      Provider.of<Products>(context, listen: false)
-          .updateProduct(_editProduct.id, _editProduct);
-      setState(() {
-        _isLoading = false;
+      await Provider.of<Products>(context, listen: false)
+          .updateProduct(_editProduct.id, _editProduct)
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+        Navigator.of(context).pop();
       });
-      Navigator.pop(context);
     } else {
       try {
         await Provider.of<Products>(context, listen: false)
-            .addProduct(_editProduct);
+            .addProduct(_editProduct)
+            .then((_) {
+          setState(() {
+            _isLoading = false;
+          });
+          Navigator.of(context).pop();
+        });
       } catch (error) {
-        return showDialog(
+        await showDialog(
             context: context,
             builder: (context) => AlertDialog(
                   title: const Text('Error'),
@@ -109,11 +118,6 @@ class _EditProductState extends State<EditProduct> {
                         child: const Text('OK'))
                   ],
                 ));
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.pop(context);
       }
     }
   }

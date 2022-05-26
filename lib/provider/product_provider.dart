@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop_app/model/http_exception.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -20,9 +21,28 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void toggleFavoriteStatus() {
+  void setFav(bool newValue) {
+    isFavorite = newValue;
+    notifyListeners();
+  }
+
+  Future<void> toggleFavoriteStatus() async {
+    final oldFav = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
+
+    final url = Uri.parse(
+        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json");
+
+    try {
+      final response =
+          await http.patch(url, body: jsonEncode({'isFavorite': isFavorite}));
+      if (response.statusCode >= 400) {
+        setFav(oldFav);
+      }
+    } catch (error) {
+      setFav(oldFav);
+    }
   }
 }
 
@@ -75,13 +95,17 @@ class Products with ChangeNotifier {
   Product findById(String id) => items.firstWhere((prod) => prod.id == id);
 
   Future<void> fetchProducts() async {
-    var url = Uri.parse(
+    final url = Uri.parse(
         "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/products.json");
 
     try {
       final response = await http.get(url);
+      if (jsonDecode(response.body) == null) {
+        return;
+      }
       final extractedResponse =
           jsonDecode(response.body) as Map<String, dynamic>;
+
       List<Product> loadedData = [];
 
       extractedResponse.forEach((prodId, prodData) {
@@ -89,7 +113,7 @@ class Products with ChangeNotifier {
           id: prodId.toString(),
           title: prodData["title"].toString(),
           description: prodData["description"].toString(),
-          price: prodData["price"].toDouble() ,
+          price: prodData["price"].toDouble(),
           imageUrl: prodData["imageUrl"].toString(),
           isFavorite: prodData["isFavorite"],
         ));
@@ -102,7 +126,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product prod) async {
-    var url = Uri.parse(
+    final url = Uri.parse(
         "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/products.json");
 
     try {
@@ -113,7 +137,7 @@ class Products with ChangeNotifier {
           "price": prod.price,
           "description": prod.description,
           "isFavorite": prod.isFavorite,
-          "imageUrl":prod.imageUrl,
+          "imageUrl": prod.imageUrl,
         }),
       );
       final newProd = Product(
@@ -129,7 +153,16 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateProduct(String id, Product newProd) {
+  Future<void> updateProduct(String id, Product newProd) async {
+    final url = Uri.parse(
+        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json");
+    await http.patch(url,
+        body: jsonEncode({
+          'title': newProd.title,
+          'price': newProd.price,
+          'description': newProd.description,
+          'imageUrl': newProd.imageUrl,
+        }));
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
       _items[prodIndex] = newProd;
@@ -137,8 +170,19 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id) {
+  Future<void> deleteProduct(String id) async {
+    final url = Uri.parse(
+        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json");
+    final currentIndex = _items.indexWhere((prod) => prod.id == id);
+    Product? currentProduct = _items[currentIndex];
     _items.removeWhere((prod) => prod.id == id);
     notifyListeners();
+    final response = await http.delete(url);
+    if (response.statusCode >= 400) {
+      _items.insert(currentIndex, currentProduct);
+      notifyListeners();
+      throw HttpException('Could not delete product.');
+    }
+    currentProduct = null;
   }
 }
