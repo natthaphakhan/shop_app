@@ -18,20 +18,16 @@ class ProductsPage extends StatefulWidget {
 
 class _ProductsPageState extends State<ProductsPage> {
   var _showOnlyFavorite = false;
-  var _isInit = true;
-  var _isLoading = true;
+  late Future fetchProduct;
+
+  Future obtainFuture() {
+    return Provider.of<Products>(context, listen: false).fetchProducts();
+  }
 
   @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      Provider.of<Products>(context).fetchProducts().then((_) {
-        setState(() {
-          _isLoading = false;
-        });
-      });
-    }
-    _isInit = false;
-    super.didChangeDependencies();
+  void initState() {
+    fetchProduct = obtainFuture();
+    super.initState();
   }
 
   @override
@@ -77,9 +73,20 @@ class _ProductsPageState extends State<ProductsPage> {
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ProductGrid(showFavorite: _showOnlyFavorite),
+      body: FutureBuilder(
+          future: fetchProduct,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return const Center(
+                child: Text('Error'),
+              );
+            } else {
+              return ProductGrid(showFavorite: _showOnlyFavorite);
+            }
+          }),
       drawer: const AppDrawer(),
     );
   }

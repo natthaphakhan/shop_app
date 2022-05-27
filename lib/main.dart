@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/provider/auth_provider.dart';
 import 'package:shop_app/provider/order_provider.dart';
+import 'package:shop_app/screen/auth_screen.dart';
 import 'package:shop_app/screen/edit_product.dart';
 import 'package:shop_app/screen/order_screen.dart';
 import 'package:shop_app/screen/product_screen.dart';
@@ -19,24 +21,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (contex) => Products(),
-        ),
-        ChangeNotifierProvider(
-          create: (contex) => Cart(),
-        ),
+        ChangeNotifierProvider(create: (contex) => Products()),
+        ChangeNotifierProvider(create: (contex) => Cart()),
         ChangeNotifierProvider(create: (context) => Order()),
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-       
         title: 'SHOP APP',
-        initialRoute: '/',
+
+        // initialRoute: '/',
+        initialRoute: '/auth',
+
         routes: {
           '/': (context) => const ProductsPage(),
           '/orders': (context) => const OrderScreen(),
           '/edit-product': (context) => const EditProduct(),
           '/user-product': (context) => const UserProductScreen(),
+          '/auth': (context) => const AuthScreen(),
         },
       ),
     );
