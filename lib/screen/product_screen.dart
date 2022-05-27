@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/provider/product_provider.dart';
-import 'package:shop_app/screen/cart_screen.dart';
 import 'package:shop_app/provider/cart_provider.dart';
 import 'package:shop_app/widget/app_drawer.dart';
 import 'package:shop_app/widget/badge.dart';
@@ -18,10 +17,10 @@ class ProductsPage extends StatefulWidget {
 
 class _ProductsPageState extends State<ProductsPage> {
   var _showOnlyFavorite = false;
-  late Future fetchProduct;
+  Future? fetchProduct;
 
-  Future obtainFuture() {
-    return Provider.of<Products>(context, listen: false).fetchProducts();
+  Future obtainFuture() async {
+    return await Provider.of<Products>(context, listen: false).fetchProducts();
   }
 
   @override
@@ -65,8 +64,7 @@ class _ProductsPageState extends State<ProductsPage> {
                 child: ch ?? Container()),
             child: IconButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const CartPage()));
+                Navigator.of(context).pushNamed('/cart');
               },
               icon: const Icon(Icons.shopping_cart),
             ),

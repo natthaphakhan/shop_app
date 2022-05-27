@@ -26,13 +26,13 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(String token) async {
     final oldFav = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
 
     final url = Uri.parse(
-        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json");
+        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$token");
 
     try {
       final response =
@@ -94,9 +94,13 @@ class Products with ChangeNotifier {
 
   Product findById(String id) => items.firstWhere((prod) => prod.id == id);
 
+  String authToken;
+
+  Products(this.authToken,this._items);
+
   Future<void> fetchProducts() async {
     final url = Uri.parse(
-        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/products.json");
+        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken");
 
     try {
       final response = await http.get(url);
@@ -127,7 +131,7 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product prod) async {
     final url = Uri.parse(
-        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/products.json");
+        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken");
 
     try {
       await http.post(
@@ -155,7 +159,7 @@ class Products with ChangeNotifier {
 
   Future<void> updateProduct(String id, Product newProd) async {
     final url = Uri.parse(
-        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json");
+        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$authToken");
     await http.patch(url,
         body: jsonEncode({
           'title': newProd.title,
