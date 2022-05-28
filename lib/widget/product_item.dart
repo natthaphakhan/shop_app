@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/provider/auth_provider.dart';
+import 'package:shop_app/provider/product_provider.dart';
 import 'package:shop_app/screen/product_detail_screen.dart';
 import 'package:shop_app/provider/cart_provider.dart';
-import 'package:shop_app/provider/product_provider.dart';
 
 class ProductItem extends StatelessWidget {
   const ProductItem({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context,listen: false);
-    final cart = Provider.of<Cart>(context,listen: false);
-    final authData = Provider.of<AuthProvider>(context,listen: false);
+    final product = Provider.of<Product>(context);
+    final cart = Provider.of<Cart>(context, listen: false);
+    final authData = Provider.of<AuthProvider>(context, listen: false);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
@@ -21,7 +21,7 @@ class ProductItem extends StatelessWidget {
           leading: Consumer<Product>(
             builder: (context, product, _) => IconButton(
               onPressed: () {
-                product.toggleFavoriteStatus(authData.token!);
+                product.toggleFavoriteStatus(authData.token!, authData.userId!);
               },
               icon: product.isFavorite
                   ? const Icon(Icons.favorite)
@@ -58,7 +58,7 @@ class ProductItem extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ProductDetail(id: product.id),
+                builder: (context) => ProductDetailScreen(id: product.id),
               ),
             );
           }),

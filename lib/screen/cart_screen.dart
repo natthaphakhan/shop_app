@@ -4,8 +4,8 @@ import 'package:shop_app/provider/cart_provider.dart';
 import 'package:shop_app/provider/order_provider.dart';
 import 'package:shop_app/widget/cart_item.dart';
 
-class CartPage extends StatelessWidget {
-  const CartPage({Key? key}) : super(key: key);
+class CartScreen extends StatelessWidget {
+  const CartScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

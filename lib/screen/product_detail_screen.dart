@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/provider/product_provider.dart';
+import 'package:shop_app/provider/products_provider.dart';
 
-class ProductDetail extends StatelessWidget {
-  const ProductDetail({Key? key, required this.id}) : super(key: key);
+class ProductDetailScreen extends StatelessWidget {
+  const ProductDetailScreen({Key? key, required this.id}) : super(key: key);
   final String id;
 
   @override

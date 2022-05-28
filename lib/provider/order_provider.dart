@@ -1,27 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:shop_app/provider/cart_provider.dart';
+import 'package:shop_app/model/cart_model.dart';
+import 'package:shop_app/model/order_model.dart';
 import 'package:http/http.dart' as http;
-
-class OrderItem {
-  final String id;
-  final double amount;
-  final List<CartItem> products;
-  final DateTime dateTime;
-
-  const OrderItem({
-    required this.id,
-    required this.amount,
-    required this.products,
-    required this.dateTime,
-  });
-}
 
 class Order with ChangeNotifier {
   String authToken;
+  String userId;
 
-  Order(this.authToken, this._orders);
+  Order(this.authToken, this._orders,this.userId);
 
   List<OrderItem> _orders = [];
 
@@ -31,7 +19,7 @@ class Order with ChangeNotifier {
 
   Future<void> fetchOrder() async {
     final url = Uri.parse(
-        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/order.json?auth=$authToken");
+        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/orders/$userId.json?auth=$authToken");
     final response = await http.get(url);
     if (jsonDecode(response.body) == null) {
       return;
@@ -62,7 +50,7 @@ class Order with ChangeNotifier {
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     final url = Uri.parse(
-        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/order.json?auth=$authToken");
+        "https://shop-app-5b362-default-rtdb.asia-southeast1.firebasedatabase.app/orders/$userId.json?auth=$authToken");
     final timeStamp = DateTime.now();
     await http.post(url,
         body: jsonEncode({

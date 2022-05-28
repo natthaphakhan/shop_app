@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/provider/product_provider.dart';
+import 'package:shop_app/provider/products_provider.dart';
 
-class EditProduct extends StatefulWidget {
-  const EditProduct({Key? key}) : super(key: key);
+class EditProductScreen extends StatefulWidget {
+  const EditProductScreen({Key? key}) : super(key: key);
 
   @override
-  State<EditProduct> createState() => _EditProductState();
+  State<EditProductScreen> createState() => _EditProductScreenState();
 }
 
-class _EditProductState extends State<EditProduct> {
+class _EditProductScreenState extends State<EditProductScreen> {
   final _priceFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/provider/product_provider.dart';
+import 'package:shop_app/provider/products_provider.dart';
 import 'package:shop_app/provider/cart_provider.dart';
 import 'package:shop_app/widget/app_drawer.dart';
 import 'package:shop_app/widget/badge.dart';
@@ -8,14 +8,14 @@ import 'package:shop_app/widget/product_grid.dart';
 
 enum FilterOptions { favorites, all }
 
-class ProductsPage extends StatefulWidget {
-  const ProductsPage({Key? key}) : super(key: key);
+class ProductsScreen extends StatefulWidget {
+  const ProductsScreen({Key? key}) : super(key: key);
 
   @override
-  State<ProductsPage> createState() => _ProductsPageState();
+  State<ProductsScreen> createState() => _ProductsScreenState();
 }
 
-class _ProductsPageState extends State<ProductsPage> {
+class _ProductsScreenState extends State<ProductsScreen> {
   var _showOnlyFavorite = false;
   Future? fetchProduct;
 
